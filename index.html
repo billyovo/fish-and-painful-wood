@@ -1,74 +1,71 @@
-<!doctype html>
-<html>
-<title>痛苦木頭</title>
-<style>
-
-.column {
-  float: left;
-  width: 50%;
-  text-align: center;
-  background-color: LightBlue;
-}
-
-
-.row:after {
-  content: "";
-  display: table;
-  clear: both;
-}
-</style>
-
-<div class="row">
-<div class="column">
-<button type="button" onclick="choice = 0;" style="width: 100%; height: 100%; background-color:LightBlue;">Fish</button>
-</div>
-<div class="column">
-<button type="button" onclick="choice = 1;" style="width: 100%; height: 100%; background-color:LightBlue;">Wood</button>
-</div>
-<div class="canvas">
-<canvas id="canvas" width="1000" height="1000" onclick="drawImage(event)">
-</canvas> 
-</div>
-<audio id="woodhang">
-<source src="woodhang.mp3" type="audio/mp3">
-</audio> 
-
-<audio id="cuthand">
-<source src="cuthand.mp3" type="audio/mp3">
-</audio> 
-
+<!DOCTYPE html>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
-var canvas = document.getElementById("canvas");
-canvas.width  = window.innerWidth;
-canvas.height = window.innerHeight;
-var choice = 0;
+$(document).ready(function(){
+    var size = 20;
+ 
+    window.addEventListener('wheel', function(event)
+    {
+     if (event.deltaY < 0)
+    {
+        size+=5;
+        if(size>200){
+            size=200;
+        }
+    }
+    else if (event.deltaY > 0)
+    {
+        size-=5;
+        if(size<20){
+            size = 20;
+        }
+    }
 
-var imagefish = new Image(100, 100);
-imagefish.src = 'fish.png';
+    $("#Size").html("Size: "+size);
+    });    
 
-var imagewood = new Image(100, 100);
-imagewood.src= 'wood.jpg';
+    $(".canvas").click(function(){
+        var e = window.event;
+        e.preventDefault();
+        x = e.clientX-size/2;
+        y = e.clientY-size/2; 
+        var params = "style='top: "+y+"px; left: "+x+"px; position: absolute;'";
+        var fish_properties = "<img src='assets/pictures/fish.png' height="+size+"px width="+size+"px "+params+">";
+        var fish = $(fish_properties);
+        $(this).append(fish);
+    })
 
-var audiofish = document.getElementById("woodhang"); 
+    $("#slider").sliderchag(function(){
+        $("#Rotation").html("Rotation: "+$(this).val());
+    })
 
-var audiowood = document.getElementById("cuthand"); 
-
-function drawImage(event){
-  var c = document.getElementById("canvas");
-  var ctx = c.getContext("2d");
-  if(choice == 0){
-  var x = event.clientX-40;
-  var y = event.clientY-60;
-  ctx.drawImage(imagefish, x, y,100,100);
-  audiofish.play();
-}
-  else{
-  var x = event.clientX-150;
-  var y = event.clientY-160;
-  ctx.drawImage(imagewood,x,y,300,300);
-  audiowood.play();
-  }
-}
+    
+})
 
 </script>
+
+<style>
+    .canvas{
+        height: 100vh;
+        width: 100vw;
+    }
+
+    html{
+        overflow: hidden;
+    }
+
+    
+
+ 
+
+</style>
+<html>
+    <body>
+        <span id="Size">Size: 20</span><br>
+        <span id="Rotation">Rotation: 180</span>
+        <input type="range" min="0" max="359" value="180" id="slider">
+        <div class="canvas">
+            
+        </div>
+    </body>
 </html>
