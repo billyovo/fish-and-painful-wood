@@ -1,27 +1,34 @@
 <!DOCTYPE html>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.1/howler.min.js"></script>
+<link rel="icon" href="assets/pictures/favicon.ico" sizes="32x32" type="image/ico">
+
 <script>
 $(document).ready(function(){
     var size = 20;
- 
+    var rotation = 0;
+    var selected = 0;
+
+    const images = ["assets/pictures/fish.png","assets/pictures/nail.png"];
+    const audio = ["assets/audio/cuthand.mp3","assets/audio/woodhang.mp3"];
     window.addEventListener('wheel', function(event)
     {
      if (event.deltaY < 0)
     {
-        size+=5;
-        if(size>200){
-            size=200;
+        rotation+=5;
+        if(rotation >=360){
+            rotation = 0;
         }
     }
     else if (event.deltaY > 0)
     {
-        size-=5;
-        if(size<20){
-            size = 20;
+        rotation-=5;
+        if(rotation<0){
+            rotation = 359;
         }
     }
 
-    $("#Size").html("Size: "+size);
+    $("#display").css("transform","rotate("+rotation+"deg)");
     });    
 
     $(".canvas").click(function(){
@@ -30,42 +37,99 @@ $(document).ready(function(){
         x = e.clientX-size/2;
         y = e.clientY-size/2; 
         var params = "style='top: "+y+"px; left: "+x+"px; position: absolute;'";
-        var fish_properties = "<img src='assets/pictures/fish.png' height="+size+"px width="+size+"px "+params+">";
+        var fish_properties = "<img src='"+images[selected]+"' height="+size+"px width="+size+"px "+params+">";
         var fish = $(fish_properties);
         $(this).append(fish);
+        $(fish).css("transform","rotate("+rotation+"deg)");
+
+        var sound = new Howl({src:[audio[selected]]}).play();
+    })  
+
+    $("#slider").on('input',function(){
+        size = $(this).val();
+        $("#Size").html("Size: "+$(this).val());
     })
 
-    $("#slider").sliderchag(function(){
-        $("#Rotation").html("Rotation: "+$(this).val());
+    $(".selector").click(function(){
+        selected = $(this).attr("id");
     })
-
     
 })
 
 </script>
 
 <style>
+    .menu{
+        background-color: rgba(173, 216, 230,0.2);
+        height: 100px;
+        width: 150px;
+        padding: 20px;
+        border: 1px rgba(0,0,255,0.4) solid;
+        border-radius: 30px;
+        margin-bottom: 10px;
+        z-index: 100;
+        display: inline-block;
+    }
+
+
     .canvas{
         height: 100vh;
         width: 100vw;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: -1;
     }
 
     html{
         overflow: hidden;
+        background: url(assets/pictures/wood.jpg) no-repeat;
+        background-size: cover;
+        padding: 0;
+        margin: 0;
     }
 
-    
+    .selectorMenu{
+        background-color: rgba(173, 216, 230,0.2);
+        height: 70px;
+        width: 150px;
+        padding: 20px;
+        border: 1px rgba(0,0,255,0.4) solid;
+        border-radius: 30px;
+        z-index: 100;
+    }
+
+    .selector{
+        cursor: pointer;
+    }
+
+    .selector:hover{
+        border: 1px lightsteelblue solid;
+        border-radius: 10px;
+    }
+
+    .selector:active{
+        padding: 3px;
+    }
+
+    body{
+        display: inline-block;
+    }
+
 
  
 
 </style>
 <html>
+    <title>fish and his painful wood</title>
     <body>
-        <span id="Size">Size: 20</span><br>
-        <span id="Rotation">Rotation: 180</span>
-        <input type="range" min="0" max="359" value="180" id="slider">
-        <div class="canvas">
-            
+        <div class="menu">
+        <span id="Size">Size: 20</span><input type="range" min="10" max="1000" value="10" id="slider"><br>
+        <span id="Rotation">Rotation: <img src='assets/pictures/fish.png' height="70px" width="70px" id="display"></span>
         </div>
+        <div class="selectorMenu">
+            <img src='assets/pictures/fish.png' width="70px" height="70px" class="selector" id="0" style="position: absolute"> <img src ='assets/pictures/nail.png' width="70px" height="70px" class="selector" id="1" style="position: absolute; left:100px;">
+        </div>
+        <div class="canvas"></div>
     </body>
 </html>
