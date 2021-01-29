@@ -36,7 +36,7 @@ $(document).ready(function(){
         e.preventDefault();
         x = e.clientX-size/2;
         y = e.clientY-size/2; 
-        var params = "style='top: "+y+"px; left: "+x+"px; position: absolute;'";
+        var params = "style='top: "+y+"px; left: "+x+"px; position: absolute;' onmousedown='return false'";
         var fish_properties = "<img src='"+images[selected]+"' height="+size+"px width="+size+"px "+params+">";
         var fish = $(fish_properties);
         $(this).append(fish);
